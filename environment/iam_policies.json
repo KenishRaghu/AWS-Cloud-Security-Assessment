@@ -1,0 +1,360 @@
+{
+  "metadata": {
+    "simulated_account": "111122223333",
+    "snapshot_date": "2026-03-15T00:00:00Z",
+    "note": "Synthetic export for portfolio assessment — not a live AWS account"
+  },
+  "users": [
+    {
+      "UserName": "svc-legacy-deploy",
+      "UserId": "AIDACKCEVSQ6C2EXAMPLE",
+      "AttachedManagedPolicies": [
+        {
+          "PolicyName": "AdministratorAccess-Simulated",
+          "PolicyArn": "arn:aws:iam::111122223333:policy/AdministratorAccess-Simulated"
+        },
+        {
+          "PolicyName": "VendorReadOnly",
+          "PolicyArn": "arn:aws:iam::111122223333:policy/VendorReadOnly"
+        }
+      ],
+      "InlinePolicies": []
+    },
+    {
+      "UserName": "contractor-analyst",
+      "UserId": "AIDACKCEVSQ6C3EXAMPLE",
+      "AttachedManagedPolicies": [
+        {
+          "PolicyName": "BroadAssumeRoleTrust",
+          "PolicyArn": "arn:aws:iam::111122223333:policy/BroadAssumeRoleTrust"
+        }
+      ],
+      "InlinePolicies": [
+        {
+          "PolicyName": "InlineS3ReadAll",
+          "PolicyDocument": {
+            "Version": "2012-10-17",
+            "Statement": [
+              {
+                "Sid": "ReadEveryBucket",
+                "Effect": "Allow",
+                "Action": ["s3:GetObject", "s3:ListBucket"],
+                "Resource": ["*"]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "UserName": "breakglass-emergency",
+      "UserId": "AIDACKCEVSQ6C4EXAMPLE",
+      "AttachedManagedPolicies": [
+        {
+          "PolicyName": "PowerUserWithStar",
+          "PolicyArn": "arn:aws:iam::111122223333:policy/PowerUserWithStar"
+        }
+      ],
+      "InlinePolicies": []
+    }
+  ],
+  "roles": [
+    {
+      "RoleName": "EC2-AppRole",
+      "RoleId": "AROACKCEVSQ6C2EXAMPLE",
+      "AssumeRolePolicyDocument": {
+        "Version": "2012-10-17",
+        "Statement": [
+          {
+            "Effect": "Allow",
+            "Principal": { "Service": "ec2.amazonaws.com" },
+            "Action": "sts:AssumeRole"
+          }
+        ]
+      },
+      "AttachedManagedPolicies": [
+        {
+          "PolicyName": "AppRuntimePolicy",
+          "PolicyArn": "arn:aws:iam::111122223333:policy/AppRuntimePolicy"
+        }
+      ]
+    },
+    {
+      "RoleName": "CrossAccountVendorRole",
+      "RoleId": "AROACKCEVSQ6C3EXAMPLE",
+      "AssumeRolePolicyDocument": {
+        "Version": "2012-10-17",
+        "Statement": [
+          {
+            "Effect": "Allow",
+            "Principal": { "AWS": "arn:aws:iam::999988887777:root" },
+            "Action": "sts:AssumeRole"
+          }
+        ]
+      },
+      "AttachedManagedPolicies": [
+        {
+          "PolicyName": "VendorReadOnly",
+          "PolicyArn": "arn:aws:iam::111122223333:policy/VendorReadOnly"
+        }
+      ]
+    },
+    {
+      "RoleName": "LambdaExecutionRole",
+      "RoleId": "AROACKCEVSQ6C4EXAMPLE",
+      "AssumeRolePolicyDocument": {
+        "Version": "2012-10-17",
+        "Statement": [
+          {
+            "Effect": "Allow",
+            "Principal": { "Service": "lambda.amazonaws.com" },
+            "Action": "sts:AssumeRole"
+          }
+        ]
+      },
+      "AttachedManagedPolicies": [
+        {
+          "PolicyName": "LambdaLeastPrivilegeOK",
+          "PolicyArn": "arn:aws:iam::111122223333:policy/LambdaLeastPrivilegeOK"
+        }
+      ]
+    }
+  ],
+  "managed_policies": [
+    {
+      "PolicyName": "AdministratorAccess-Simulated",
+      "PolicyArn": "arn:aws:iam::111122223333:policy/AdministratorAccess-Simulated",
+      "DefaultVersion": {
+        "Document": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Action": "*",
+              "Resource": "*"
+            }
+          ]
+        }
+      },
+      "AttachmentSummary": {
+        "attached_to_users": ["svc-legacy-deploy"],
+        "attached_to_roles": [],
+        "attached_to_groups": []
+      }
+    },
+    {
+      "PolicyName": "PowerUserWithStar",
+      "PolicyArn": "arn:aws:iam::111122223333:policy/PowerUserWithStar",
+      "DefaultVersion": {
+        "Document": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Sid": "WildcardManagement",
+              "Effect": "Allow",
+              "Action": "*",
+              "Resource": "*",
+              "Condition": {
+                "StringNotEquals": {
+                  "aws:RequestedRegion": "eu-west-1"
+                }
+              }
+            }
+          ]
+        }
+      },
+      "AttachmentSummary": {
+        "attached_to_users": ["breakglass-emergency"],
+        "attached_to_roles": [],
+        "attached_to_groups": []
+      }
+    },
+    {
+      "PolicyName": "AppRuntimePolicy",
+      "PolicyArn": "arn:aws:iam::111122223333:policy/AppRuntimePolicy",
+      "DefaultVersion": {
+        "Document": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Sid": "DynamoAndLogs",
+              "Effect": "Allow",
+              "Action": [
+                "dynamodb:GetItem",
+                "dynamodb:PutItem",
+                "dynamodb:Query",
+                "logs:CreateLogStream",
+                "logs:PutLogEvents"
+              ],
+              "Resource": [
+                "arn:aws:dynamodb:us-east-1:111122223333:table/orders",
+                "arn:aws:logs:us-east-1:111122223333:log-group:/app/*"
+              ]
+            },
+            {
+              "Sid": "UnusedOldS3Perms",
+              "Effect": "Allow",
+              "Action": ["s3:GetObject", "s3:ListBucket"],
+              "Resource": [
+                "arn:aws:s3:::deprecated-warehouse",
+                "arn:aws:s3:::deprecated-warehouse/*"
+              ]
+            }
+          ]
+        }
+      },
+      "AttachmentSummary": {
+        "attached_to_users": [],
+        "attached_to_roles": ["EC2-AppRole"],
+        "attached_to_groups": []
+      }
+    },
+    {
+      "PolicyName": "VendorReadOnly",
+      "PolicyArn": "arn:aws:iam::111122223333:policy/VendorReadOnly",
+      "DefaultVersion": {
+        "Document": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Action": ["s3:GetObject", "s3:ListBucket"],
+              "Resource": [
+                "arn:aws:s3:::vendor-handoff-bucket",
+                "arn:aws:s3:::vendor-handoff-bucket/*"
+              ]
+            }
+          ]
+        }
+      },
+      "AttachmentSummary": {
+        "attached_to_users": ["svc-legacy-deploy"],
+        "attached_to_roles": ["CrossAccountVendorRole"],
+        "attached_to_groups": []
+      }
+    },
+    {
+      "PolicyName": "LambdaLeastPrivilegeOK",
+      "PolicyArn": "arn:aws:iam::111122223333:policy/LambdaLeastPrivilegeOK",
+      "DefaultVersion": {
+        "Document": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Action": ["lambda:InvokeFunction"],
+              "Resource": "arn:aws:lambda:us-east-1:111122223333:function:internal-processor"
+            },
+            {
+              "Effect": "Allow",
+              "Action": ["kms:Decrypt"],
+              "Resource": "arn:aws:kms:us-east-1:111122223333:key/12345678-1234-1234-1234-123456789012",
+              "Condition": {
+                "StringEquals": {
+                  "kms:ViaService": "lambda.us-east-1.amazonaws.com"
+                }
+              }
+            }
+          ]
+        }
+      },
+      "AttachmentSummary": {
+        "attached_to_users": [],
+        "attached_to_roles": ["LambdaExecutionRole"],
+        "attached_to_groups": []
+      }
+    },
+    {
+      "PolicyName": "HumanAdminNoMFACondition",
+      "PolicyArn": "arn:aws:iam::111122223333:policy/HumanAdminNoMFACondition",
+      "DefaultVersion": {
+        "Document": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Sid": "AdminWithoutMFAReq",
+              "Effect": "Allow",
+              "Action": [
+                "iam:CreateUser",
+                "iam:AttachUserPolicy",
+                "iam:PutUserPolicy",
+                "sts:AssumeRole"
+              ],
+              "Resource": "*"
+            }
+          ]
+        }
+      },
+      "AttachmentSummary": {
+        "attached_to_users": [],
+        "attached_to_roles": ["EC2-AppRole"],
+        "attached_to_groups": ["DevelopersPowerUsers"]
+      }
+    },
+    {
+      "PolicyName": "CIEmbeddedKeySimulation",
+      "PolicyArn": "arn:aws:iam::111122223333:policy/CIEmbeddedKeySimulation",
+      "Description": "Simulates risky practice: static access key embedded in build config (portfolio only)",
+      "DefaultVersion": {
+        "Document": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Sid": "SimulatedLeakedKeyInComment",
+              "Effect": "Allow",
+              "Action": ["s3:PutObject"],
+              "Resource": "arn:aws:s3:::build-artifacts-internal/*",
+              "Comment": "DO NOT COMMIT — access_key=AKIAIOSFODNN7EXAMPLE secret_key=wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY"
+            }
+          ]
+        }
+      },
+      "AttachmentSummary": {
+        "attached_to_users": [],
+        "attached_to_roles": [],
+        "attached_to_groups": ["BuildEngineers"]
+      }
+    },
+    {
+      "PolicyName": "BroadAssumeRoleTrust",
+      "PolicyArn": "arn:aws:iam::111122223333:policy/BroadAssumeRoleTrust",
+      "DefaultVersion": {
+        "Document": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Action": "sts:AssumeRole",
+              "Resource": "*"
+            }
+          ]
+        }
+      },
+      "AttachmentSummary": {
+        "attached_to_users": ["contractor-analyst"],
+        "attached_to_roles": [],
+        "attached_to_groups": []
+      }
+    }
+  ],
+  "groups": [
+    {
+      "GroupName": "DevelopersPowerUsers",
+      "AttachedManagedPolicies": [
+        {
+          "PolicyName": "HumanAdminNoMFACondition",
+          "PolicyArn": "arn:aws:iam::111122223333:policy/HumanAdminNoMFACondition"
+        }
+      ]
+    },
+    {
+      "GroupName": "BuildEngineers",
+      "AttachedManagedPolicies": [
+        {
+          "PolicyName": "CIEmbeddedKeySimulation",
+          "PolicyArn": "arn:aws:iam::111122223333:policy/CIEmbeddedKeySimulation"
+        }
+      ]
+    }
+  ]
+}

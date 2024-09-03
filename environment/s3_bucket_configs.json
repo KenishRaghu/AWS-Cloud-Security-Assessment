@@ -1,0 +1,143 @@
+{
+  "metadata": {
+    "simulated_account": "111122223333",
+    "snapshot_date": "2026-03-15T00:00:00Z"
+  },
+  "buckets": [
+    {
+      "Name": "corp-public-assets-prod",
+      "Region": "us-east-1",
+      "OwnershipControls": { "ObjectOwnership": "BucketOwnerPreferred" },
+      "PublicAccessBlockConfiguration": {
+        "BlockPublicAcls": false,
+        "IgnorePublicAcls": false,
+        "BlockPublicPolicy": false,
+        "RestrictPublicBuckets": false
+      },
+      "ACL": "public-read",
+      "ServerSideEncryptionConfiguration": null,
+      "Versioning": { "Status": "Suspended" },
+      "Logging": { "LoggingEnabled": false, "TargetBucket": null, "TargetPrefix": null },
+      "BucketPolicy": {
+        "Version": "2012-10-17",
+        "Statement": [
+          {
+            "Sid": "PublicReadGetObject",
+            "Effect": "Allow",
+            "Principal": "*",
+            "Action": "s3:GetObject",
+            "Resource": "arn:aws:s3:::corp-public-assets-prod/*"
+          }
+        ]
+      }
+    },
+    {
+      "Name": "finance-reports-internal",
+      "Region": "us-east-1",
+      "PublicAccessBlockConfiguration": {
+        "BlockPublicAcls": true,
+        "IgnorePublicAcls": true,
+        "BlockPublicPolicy": true,
+        "RestrictPublicBuckets": true
+      },
+      "ACL": "private",
+      "ServerSideEncryptionConfiguration": null,
+      "Versioning": { "Status": "Enabled" },
+      "Logging": { "LoggingEnabled": false, "TargetBucket": null, "TargetPrefix": null },
+      "BucketPolicy": {
+        "Version": "2012-10-17",
+        "Statement": [
+          {
+            "Effect": "Allow",
+            "Principal": { "AWS": "arn:aws:iam::111122223333:root" },
+            "Action": "s3:*",
+            "Resource": [
+              "arn:aws:s3:::finance-reports-internal",
+              "arn:aws:s3:::finance-reports-internal/*"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "Name": "app-user-uploads-staging",
+      "Region": "us-west-2",
+      "PublicAccessBlockConfiguration": {
+        "BlockPublicAcls": true,
+        "IgnorePublicAcls": true,
+        "BlockPublicPolicy": true,
+        "RestrictPublicBuckets": true
+      },
+      "ACL": "private",
+      "ServerSideEncryptionConfiguration": {
+        "Rules": [
+          {
+            "ApplyServerSideEncryptionByDefault": {
+              "SSEAlgorithm": "AES256"
+            },
+            "BucketKeyEnabled": true
+          }
+        ]
+      },
+      "Versioning": { "Status": "Suspended" },
+      "Logging": { "LoggingEnabled": true, "TargetBucket": "central-s3-access-logs", "TargetPrefix": "staging-uploads/" },
+      "BucketPolicy": {
+        "Version": "2012-10-17",
+        "Statement": [
+          {
+            "Sid": "AppRoleOnly",
+            "Effect": "Allow",
+            "Principal": { "AWS": "arn:aws:iam::111122223333:role/EC2-AppRole" },
+            "Action": ["s3:PutObject", "s3:GetObject"],
+            "Resource": "arn:aws:s3:::app-user-uploads-staging/*"
+          }
+        ]
+      }
+    },
+    {
+      "Name": "vendor-handoff-bucket",
+      "Region": "us-east-1",
+      "PublicAccessBlockConfiguration": {
+        "BlockPublicAcls": true,
+        "IgnorePublicAcls": true,
+        "BlockPublicPolicy": true,
+        "RestrictPublicBuckets": true
+      },
+      "ACL": "private",
+      "ServerSideEncryptionConfiguration": null,
+      "Versioning": { "Status": "Enabled" },
+      "Logging": { "LoggingEnabled": false, "TargetBucket": null, "TargetPrefix": null },
+      "BucketPolicy": {
+        "Version": "2012-10-17",
+        "Statement": [
+          {
+            "Sid": "VendorAccountWildcard",
+            "Effect": "Allow",
+            "Principal": { "AWS": "arn:aws:iam::999988887777:root" },
+            "Action": ["s3:GetObject", "s3:ListBucket", "s3:PutObject"],
+            "Resource": [
+              "arn:aws:s3:::vendor-handoff-bucket",
+              "arn:aws:s3:::vendor-handoff-bucket/*"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "Name": "deprecated-warehouse",
+      "Region": "us-east-1",
+      "PublicAccessBlockConfiguration": {
+        "BlockPublicAcls": true,
+        "IgnorePublicAcls": true,
+        "BlockPublicPolicy": true,
+        "RestrictPublicBuckets": true
+      },
+      "ACL": "private",
+      "ServerSideEncryptionConfiguration": null,
+      "Versioning": { "Status": "Suspended" },
+      "Logging": { "LoggingEnabled": false, "TargetBucket": null, "TargetPrefix": null },
+      "BucketPolicy": null,
+      "Tags": [{ "Key": "status", "Value": "deprecated-empty" }]
+    }
+  ]
+}
