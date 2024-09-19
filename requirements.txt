@@ -1,0 +1,2 @@
+# Intentionally empty: auditors use Python 3 standard library only (json, argparse, datetime, collections).
+# No boto3 or third-party scanners — install nothing extra to run the assessment.
