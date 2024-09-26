@@ -1,0 +1,223 @@
+{
+  "scan_type": "s3",
+  "generated_at": "2026-04-10T22:09:32Z",
+  "source_file": "environment/s3_bucket_configs.json",
+  "findings": [
+    {
+      "id": "S3-001",
+      "title": "S3 bucket exposes or allows public access configuration",
+      "severity": "Critical",
+      "resource": "s3://corp-public-assets-prod",
+      "category": "S3",
+      "description": "Public ACLs and/or S3 Block Public Access not fully enabled increases risk of data exposure.",
+      "evidence": {
+        "ACL": "public-read",
+        "PublicAccessBlockConfiguration": {
+          "BlockPublicAcls": false,
+          "IgnorePublicAcls": false,
+          "BlockPublicPolicy": false,
+          "RestrictPublicBuckets": false
+        }
+      },
+      "remediation_hint": "Enable all four Block Public Access settings; remove public ACLs; use CloudFront OAC for public content."
+    },
+    {
+      "id": "S3-002",
+      "title": "Default encryption not configured for bucket",
+      "severity": "High",
+      "resource": "s3://corp-public-assets-prod",
+      "category": "S3",
+      "description": "Objects may be stored without default SSE-S3 or SSE-KMS at rest.",
+      "evidence": {
+        "ServerSideEncryptionConfiguration": null
+      },
+      "remediation_hint": "Enable default bucket encryption; prefer KMS CMK for sensitive data with key policies."
+    },
+    {
+      "id": "S3-003",
+      "title": "S3 versioning not enabled",
+      "severity": "Medium",
+      "resource": "s3://corp-public-assets-prod",
+      "category": "S3",
+      "description": "Without versioning, accidental deletes and ransomware-style overwrites are harder to recover from.",
+      "evidence": {
+        "Versioning": {
+          "Status": "Suspended"
+        }
+      },
+      "remediation_hint": "Enable versioning on critical buckets; pair with lifecycle rules and MFA delete for sensitive buckets."
+    },
+    {
+      "id": "S3-004",
+      "title": "Server access logging not enabled",
+      "severity": "Medium",
+      "resource": "s3://corp-public-assets-prod",
+      "category": "S3",
+      "description": "Bucket-level access logging to a dedicated log bucket aids detection and forensics.",
+      "evidence": {
+        "Logging": {
+          "LoggingEnabled": false,
+          "TargetBucket": null,
+          "TargetPrefix": null
+        }
+      },
+      "remediation_hint": "Enable server access logging to a centralized logging bucket with tight bucket policy."
+    },
+    {
+      "id": "S3-005",
+      "title": "Bucket policy allows anonymous or public object access",
+      "severity": "Critical",
+      "resource": "s3://corp-public-assets-prod",
+      "category": "S3",
+      "description": "A bucket policy statement grants GetObject (or s3:*) to a public principal.",
+      "evidence": {
+        "BucketPolicy": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Sid": "PublicReadGetObject",
+              "Effect": "Allow",
+              "Principal": "*",
+              "Action": "s3:GetObject",
+              "Resource": "arn:aws:s3:::corp-public-assets-prod/*"
+            }
+          ]
+        }
+      },
+      "remediation_hint": "Remove Principal *; use OAI/OAC, signed URLs, or authenticated viewers only."
+    },
+    {
+      "id": "S3-006",
+      "title": "Default encryption not configured for bucket",
+      "severity": "High",
+      "resource": "s3://finance-reports-internal",
+      "category": "S3",
+      "description": "Objects may be stored without default SSE-S3 or SSE-KMS at rest.",
+      "evidence": {
+        "ServerSideEncryptionConfiguration": null
+      },
+      "remediation_hint": "Enable default bucket encryption; prefer KMS CMK for sensitive data with key policies."
+    },
+    {
+      "id": "S3-007",
+      "title": "Server access logging not enabled",
+      "severity": "Medium",
+      "resource": "s3://finance-reports-internal",
+      "category": "S3",
+      "description": "Bucket-level access logging to a dedicated log bucket aids detection and forensics.",
+      "evidence": {
+        "Logging": {
+          "LoggingEnabled": false,
+          "TargetBucket": null,
+          "TargetPrefix": null
+        }
+      },
+      "remediation_hint": "Enable server access logging to a centralized logging bucket with tight bucket policy."
+    },
+    {
+      "id": "S3-008",
+      "title": "Overly broad bucket policy (account root with s3:*)",
+      "severity": "High",
+      "resource": "s3://finance-reports-internal",
+      "category": "S3",
+      "description": "Granting s3:* to account root bypasses normal IAM boundary discipline and is hard to audit.",
+      "evidence": {
+        "note": "Principal :root with s3:* detected"
+      },
+      "remediation_hint": "Replace with roles, explicit ARNs, and condition keys (aws:PrincipalArn, vpc SourceIp)."
+    },
+    {
+      "id": "S3-009",
+      "title": "S3 versioning not enabled",
+      "severity": "Medium",
+      "resource": "s3://app-user-uploads-staging",
+      "category": "S3",
+      "description": "Without versioning, accidental deletes and ransomware-style overwrites are harder to recover from.",
+      "evidence": {
+        "Versioning": {
+          "Status": "Suspended"
+        }
+      },
+      "remediation_hint": "Enable versioning on critical buckets; pair with lifecycle rules and MFA delete for sensitive buckets."
+    },
+    {
+      "id": "S3-010",
+      "title": "Default encryption not configured for bucket",
+      "severity": "High",
+      "resource": "s3://vendor-handoff-bucket",
+      "category": "S3",
+      "description": "Objects may be stored without default SSE-S3 or SSE-KMS at rest.",
+      "evidence": {
+        "ServerSideEncryptionConfiguration": null
+      },
+      "remediation_hint": "Enable default bucket encryption; prefer KMS CMK for sensitive data with key policies."
+    },
+    {
+      "id": "S3-011",
+      "title": "Server access logging not enabled",
+      "severity": "Medium",
+      "resource": "s3://vendor-handoff-bucket",
+      "category": "S3",
+      "description": "Bucket-level access logging to a dedicated log bucket aids detection and forensics.",
+      "evidence": {
+        "Logging": {
+          "LoggingEnabled": false,
+          "TargetBucket": null,
+          "TargetPrefix": null
+        }
+      },
+      "remediation_hint": "Enable server access logging to a centralized logging bucket with tight bucket policy."
+    },
+    {
+      "id": "S3-012",
+      "title": "Default encryption not configured for bucket",
+      "severity": "High",
+      "resource": "s3://deprecated-warehouse",
+      "category": "S3",
+      "description": "Objects may be stored without default SSE-S3 or SSE-KMS at rest.",
+      "evidence": {
+        "ServerSideEncryptionConfiguration": null
+      },
+      "remediation_hint": "Enable default bucket encryption; prefer KMS CMK for sensitive data with key policies."
+    },
+    {
+      "id": "S3-013",
+      "title": "S3 versioning not enabled",
+      "severity": "Medium",
+      "resource": "s3://deprecated-warehouse",
+      "category": "S3",
+      "description": "Without versioning, accidental deletes and ransomware-style overwrites are harder to recover from.",
+      "evidence": {
+        "Versioning": {
+          "Status": "Suspended"
+        }
+      },
+      "remediation_hint": "Enable versioning on critical buckets; pair with lifecycle rules and MFA delete for sensitive buckets."
+    },
+    {
+      "id": "S3-014",
+      "title": "Server access logging not enabled",
+      "severity": "Medium",
+      "resource": "s3://deprecated-warehouse",
+      "category": "S3",
+      "description": "Bucket-level access logging to a dedicated log bucket aids detection and forensics.",
+      "evidence": {
+        "Logging": {
+          "LoggingEnabled": false,
+          "TargetBucket": null,
+          "TargetPrefix": null
+        }
+      },
+      "remediation_hint": "Enable server access logging to a centralized logging bucket with tight bucket policy."
+    }
+  ],
+  "summary": {
+    "total": 14,
+    "by_severity": {
+      "Critical": 2,
+      "High": 5,
+      "Medium": 7,
+      "Low": 0
+    }
+  }
+}

@@ -1,0 +1,817 @@
+{
+  "scan_type": "cloudtrail",
+  "generated_at": "2026-04-10T22:09:54Z",
+  "source_file": "environment/cloudtrail_logs.json",
+  "findings": [
+    {
+      "id": "CT-001",
+      "title": "Console login without MFA",
+      "severity": "High",
+      "resource": "IAMUser:contractor-analyst",
+      "category": "CloudTrail",
+      "description": "Successful console authentication reported MFAUsed=No.",
+      "evidence": {
+        "eventTime": "2026-03-10T17:45:11Z",
+        "sourceIPAddress": "203.0.113.88"
+      },
+      "remediation_hint": "Enforce MFA via IAM policy or Identity Center; deny console without MFA."
+    },
+    {
+      "id": "CT-002",
+      "title": "AssumeRole from non-corporate source IP",
+      "severity": "High",
+      "resource": "IAMUser:contractor-analyst",
+      "category": "CloudTrail",
+      "description": "Role assumption from IP 185.220.101.33 outside simulated trusted corporate ranges.",
+      "evidence": {
+        "eventTime": "2026-03-10T19:00:00Z",
+        "requestParameters": {
+          "roleArn": "arn:aws:iam::111122223333:role/CrossAccountVendorRole",
+          "roleSessionName": "vendor-sync"
+        }
+      },
+      "remediation_hint": "Tighten role trust with SourceIp / vpc conditions; alert on geo anomalies."
+    },
+    {
+      "id": "CT-003",
+      "title": "CloudTrail tampering indicator: StopLogging (succeeded)",
+      "severity": "Critical",
+      "resource": "org-main-trail",
+      "category": "CloudTrail",
+      "description": "Logging pipeline modification (or attempted modification) is a common defense-evasion technique; successful StopLogging is especially severe.",
+      "evidence": {
+        "eventTime": "2026-03-10T22:00:00Z",
+        "principal": "arn:aws:sts::111122223333:assumed-role/CrossAccountVendorRole/vendor-sync",
+        "sourceIPAddress": "185.220.101.33",
+        "errorCode": null
+      },
+      "remediation_hint": "Restrict cloudtrail:* to security admin role; immutable S3 + SNS alerts on StopLogging."
+    },
+    {
+      "id": "CT-004",
+      "title": "Root account API usage detected",
+      "severity": "Critical",
+      "resource": "account root",
+      "category": "CloudTrail",
+      "description": "Root should be locked away; any interactive or API use is high risk.",
+      "evidence": {
+        "eventName": "ConsoleLogin",
+        "eventTime": "2026-03-11T07:30:00Z",
+        "sourceIPAddress": "198.51.100.100"
+      },
+      "remediation_hint": "Remove root access keys; enable MFA on root; use break-glass procedures only."
+    },
+    {
+      "id": "CT-005",
+      "title": "Console login without MFA",
+      "severity": "High",
+      "resource": "Root",
+      "category": "CloudTrail",
+      "description": "Successful console authentication reported MFAUsed=No.",
+      "evidence": {
+        "eventTime": "2026-03-11T07:30:00Z",
+        "sourceIPAddress": "198.51.100.100"
+      },
+      "remediation_hint": "Enforce MFA via IAM policy or Identity Center; deny console without MFA."
+    },
+    {
+      "id": "CT-006",
+      "title": "Root account API usage detected",
+      "severity": "Critical",
+      "resource": "account root",
+      "category": "CloudTrail",
+      "description": "Root should be locked away; any interactive or API use is high risk.",
+      "evidence": {
+        "eventName": "GetAccountSummary",
+        "eventTime": "2026-03-11T08:00:00Z",
+        "sourceIPAddress": "198.51.100.100"
+      },
+      "remediation_hint": "Remove root access keys; enable MFA on root; use break-glass procedures only."
+    },
+    {
+      "id": "CT-007",
+      "title": "Root account API usage detected",
+      "severity": "Critical",
+      "resource": "account root",
+      "category": "CloudTrail",
+      "description": "Root should be locked away; any interactive or API use is high risk.",
+      "evidence": {
+        "eventName": "ListAccountAliases",
+        "eventTime": "2026-03-11T08:05:00Z",
+        "sourceIPAddress": "198.51.100.100"
+      },
+      "remediation_hint": "Remove root access keys; enable MFA on root; use break-glass procedures only."
+    },
+    {
+      "id": "CT-008",
+      "title": "PutBucketPolicy altering public or wildcard principal",
+      "severity": "Critical",
+      "resource": "corp-public-assets-prod",
+      "category": "CloudTrail",
+      "description": "Bucket policy update referencing wildcard principal \u2014 often public-read misconfiguration.",
+      "evidence": {
+        "eventTime": "2026-03-11T09:10:00Z",
+        "principal": "arn:aws:sts::111122223333:assumed-role/CrossAccountVendorRole/vendor-sync"
+      },
+      "remediation_hint": "Revert policy; enable Block Public Access; investigate principal that issued change."
+    },
+    {
+      "id": "CT-009",
+      "title": "CloudTrail tampering indicator: DeleteTrail (returned AccessDenied)",
+      "severity": "High",
+      "resource": "legacy-audit-trail",
+      "category": "CloudTrail",
+      "description": "Logging pipeline modification (or attempted modification) is a common defense-evasion technique; successful StopLogging is especially severe.",
+      "evidence": {
+        "eventTime": "2026-03-11T09:45:00Z",
+        "principal": "arn:aws:sts::111122223333:assumed-role/CrossAccountVendorRole/vendor-sync",
+        "sourceIPAddress": "185.220.101.33",
+        "errorCode": "AccessDenied"
+      },
+      "remediation_hint": "Restrict cloudtrail:* to security admin role; immutable S3 + SNS alerts on StopLogging."
+    },
+    {
+      "id": "CT-010",
+      "title": "AssumeRole from non-corporate source IP",
+      "severity": "High",
+      "resource": "IAMUser:svc-legacy-deploy",
+      "category": "CloudTrail",
+      "description": "Role assumption from IP 45.33.32.156 outside simulated trusted corporate ranges.",
+      "evidence": {
+        "eventTime": "2026-03-12T07:00:00Z",
+        "requestParameters": {
+          "roleArn": "arn:aws:iam::111122223333:role/CrossAccountVendorRole",
+          "roleSessionName": "automation"
+        }
+      },
+      "remediation_hint": "Tighten role trust with SourceIp / vpc conditions; alert on geo anomalies."
+    },
+    {
+      "id": "CT-011",
+      "title": "Console login without MFA",
+      "severity": "High",
+      "resource": "IAMUser:breakglass-emergency",
+      "category": "CloudTrail",
+      "description": "Successful console authentication reported MFAUsed=No.",
+      "evidence": {
+        "eventTime": "2026-03-13T10:00:00Z",
+        "sourceIPAddress": "192.0.2.200"
+      },
+      "remediation_hint": "Enforce MFA via IAM policy or Identity Center; deny console without MFA."
+    },
+    {
+      "id": "CT-012",
+      "title": "Burst of AccessDenied errors (possible enumeration)",
+      "severity": "Medium",
+      "resource": "IAMUser:contractor-analyst",
+      "category": "CloudTrail",
+      "description": "Observed 8 denied API calls within ~2 minutes \u2014 often reconnaissance.",
+      "evidence": {
+        "window_start": "2026-03-10T18:04:22+00:00",
+        "count": 8
+      },
+      "remediation_hint": "Correlate with GuardDuty; apply SCP denies for s3:ListAllMyBuckets at perimeter if abuse."
+    },
+    {
+      "id": "CT-013",
+      "title": "Burst of AccessDenied errors (possible enumeration)",
+      "severity": "Medium",
+      "resource": "arn:aws:sts::111122223333:assumed-role/CrossAccountVendorRole/automation",
+      "category": "CloudTrail",
+      "description": "Observed 5 denied API calls within ~2 minutes \u2014 often reconnaissance.",
+      "evidence": {
+        "window_start": "2026-03-12T08:00:00+00:00",
+        "count": 5
+      },
+      "remediation_hint": "Correlate with GuardDuty; apply SCP denies for s3:ListAllMyBuckets at perimeter if abuse."
+    }
+  ],
+  "timeline": [
+    {
+      "eventTime": "2026-03-10T08:01:12Z",
+      "eventName": "AssumeRole",
+      "sourceIPAddress": "198.51.100.45",
+      "principal": "IAMUser:alice.engineer",
+      "errorCode": null,
+      "risk_note": null
+    },
+    {
+      "eventTime": "2026-03-10T08:15:03Z",
+      "eventName": "ListBuckets",
+      "sourceIPAddress": "198.51.100.45",
+      "principal": "arn:aws:sts::111122223333:assumed-role/EC2-AppRole/cli-session",
+      "errorCode": null,
+      "risk_note": null
+    },
+    {
+      "eventTime": "2026-03-10T09:22:41Z",
+      "eventName": "ConsoleLogin",
+      "sourceIPAddress": "203.0.113.12",
+      "principal": "IAMUser:bob.admin",
+      "errorCode": null,
+      "risk_note": null
+    },
+    {
+      "eventTime": "2026-03-10T10:05:18Z",
+      "eventName": "GetCallerIdentity",
+      "sourceIPAddress": "198.51.100.22",
+      "principal": "IAMUser:alice.engineer",
+      "errorCode": null,
+      "risk_note": null
+    },
+    {
+      "eventTime": "2026-03-10T11:30:00Z",
+      "eventName": "DescribeInstances",
+      "sourceIPAddress": "198.51.100.22",
+      "principal": "IAMUser:alice.engineer",
+      "errorCode": null,
+      "risk_note": null
+    },
+    {
+      "eventTime": "2026-03-10T12:44:55Z",
+      "eventName": "ListUsers",
+      "sourceIPAddress": "198.51.100.22",
+      "principal": "IAMUser:alice.engineer",
+      "errorCode": null,
+      "risk_note": null
+    },
+    {
+      "eventTime": "2026-03-10T14:00:01Z",
+      "eventName": "PutMetricData",
+      "sourceIPAddress": "10.0.1.50",
+      "principal": "arn:aws:sts::111122223333:assumed-role/EC2-AppRole/i-0abc123",
+      "errorCode": null,
+      "risk_note": null
+    },
+    {
+      "eventTime": "2026-03-10T15:12:33Z",
+      "eventName": "GetObject",
+      "sourceIPAddress": "10.0.1.50",
+      "principal": "arn:aws:sts::111122223333:assumed-role/EC2-AppRole/i-0abc123",
+      "errorCode": null,
+      "risk_note": null
+    },
+    {
+      "eventTime": "2026-03-10T16:20:00Z",
+      "eventName": "CreateLogStream",
+      "sourceIPAddress": "10.0.1.50",
+      "principal": "arn:aws:sts::111122223333:assumed-role/EC2-AppRole/i-0abc123",
+      "errorCode": null,
+      "risk_note": null
+    },
+    {
+      "eventTime": "2026-03-10T17:45:11Z",
+      "eventName": "ConsoleLogin",
+      "sourceIPAddress": "203.0.113.88",
+      "principal": "IAMUser:contractor-analyst",
+      "errorCode": null,
+      "risk_note": "Console login without MFA"
+    },
+    {
+      "eventTime": "2026-03-10T18:02:00Z",
+      "eventName": "ListAttachedUserPolicies",
+      "sourceIPAddress": "203.0.113.88",
+      "principal": "IAMUser:contractor-analyst",
+      "errorCode": null,
+      "risk_note": null
+    },
+    {
+      "eventTime": "2026-03-10T18:03:15Z",
+      "eventName": "ListUserPolicies",
+      "sourceIPAddress": "203.0.113.88",
+      "principal": "IAMUser:contractor-analyst",
+      "errorCode": null,
+      "risk_note": null
+    },
+    {
+      "eventTime": "2026-03-10T18:04:22Z",
+      "eventName": "GetUserPolicy",
+      "sourceIPAddress": "203.0.113.88",
+      "principal": "IAMUser:contractor-analyst",
+      "errorCode": "AccessDenied",
+      "risk_note": null
+    },
+    {
+      "eventTime": "2026-03-10T18:04:23Z",
+      "eventName": "GetUserPolicy",
+      "sourceIPAddress": "203.0.113.88",
+      "principal": "IAMUser:contractor-analyst",
+      "errorCode": "AccessDenied",
+      "risk_note": null
+    },
+    {
+      "eventTime": "2026-03-10T18:04:24Z",
+      "eventName": "GetUserPolicy",
+      "sourceIPAddress": "203.0.113.88",
+      "principal": "IAMUser:contractor-analyst",
+      "errorCode": "AccessDenied",
+      "risk_note": null
+    },
+    {
+      "eventTime": "2026-03-10T18:04:25Z",
+      "eventName": "GetUserPolicy",
+      "sourceIPAddress": "203.0.113.88",
+      "principal": "IAMUser:contractor-analyst",
+      "errorCode": "AccessDenied",
+      "risk_note": null
+    },
+    {
+      "eventTime": "2026-03-10T18:04:26Z",
+      "eventName": "GetUserPolicy",
+      "sourceIPAddress": "203.0.113.88",
+      "principal": "IAMUser:contractor-analyst",
+      "errorCode": "AccessDenied",
+      "risk_note": null
+    },
+    {
+      "eventTime": "2026-03-10T18:05:00Z",
+      "eventName": "ListRoles",
+      "sourceIPAddress": "203.0.113.88",
+      "principal": "IAMUser:contractor-analyst",
+      "errorCode": null,
+      "risk_note": null
+    },
+    {
+      "eventTime": "2026-03-10T18:06:10Z",
+      "eventName": "SimulatePrincipalPolicy",
+      "sourceIPAddress": "203.0.113.88",
+      "principal": "IAMUser:contractor-analyst",
+      "errorCode": "AccessDenied",
+      "risk_note": null
+    },
+    {
+      "eventTime": "2026-03-10T18:06:11Z",
+      "eventName": "SimulatePrincipalPolicy",
+      "sourceIPAddress": "203.0.113.88",
+      "principal": "IAMUser:contractor-analyst",
+      "errorCode": "AccessDenied",
+      "risk_note": null
+    },
+    {
+      "eventTime": "2026-03-10T18:06:12Z",
+      "eventName": "SimulatePrincipalPolicy",
+      "sourceIPAddress": "203.0.113.88",
+      "principal": "IAMUser:contractor-analyst",
+      "errorCode": "AccessDenied",
+      "risk_note": null
+    },
+    {
+      "eventTime": "2026-03-10T19:00:00Z",
+      "eventName": "AssumeRole",
+      "sourceIPAddress": "185.220.101.33",
+      "principal": "IAMUser:contractor-analyst",
+      "errorCode": null,
+      "risk_note": "Cross-principal role assumption from unusual IP"
+    },
+    {
+      "eventTime": "2026-03-10T19:01:05Z",
+      "eventName": "ListBuckets",
+      "sourceIPAddress": "185.220.101.33",
+      "principal": "arn:aws:sts::111122223333:assumed-role/CrossAccountVendorRole/vendor-sync",
+      "errorCode": null,
+      "risk_note": null
+    },
+    {
+      "eventTime": "2026-03-10T19:02:30Z",
+      "eventName": "GetObject",
+      "sourceIPAddress": "185.220.101.33",
+      "principal": "arn:aws:sts::111122223333:assumed-role/CrossAccountVendorRole/vendor-sync",
+      "errorCode": null,
+      "risk_note": null
+    },
+    {
+      "eventTime": "2026-03-10T20:15:00Z",
+      "eventName": "UpdateTrail",
+      "sourceIPAddress": "198.51.100.5",
+      "principal": "IAMUser:alice.engineer",
+      "errorCode": "AccessDenied",
+      "risk_note": null
+    },
+    {
+      "eventTime": "2026-03-10T20:15:01Z",
+      "eventName": "UpdateTrail",
+      "sourceIPAddress": "198.51.100.5",
+      "principal": "IAMUser:alice.engineer",
+      "errorCode": "AccessDenied",
+      "risk_note": null
+    },
+    {
+      "eventTime": "2026-03-10T22:00:00Z",
+      "eventName": "StopLogging",
+      "sourceIPAddress": "185.220.101.33",
+      "principal": "arn:aws:sts::111122223333:assumed-role/CrossAccountVendorRole/vendor-sync",
+      "errorCode": null,
+      "risk_note": "Audit log tampering / evasion"
+    },
+    {
+      "eventTime": "2026-03-10T22:05:00Z",
+      "eventName": "StartLogging",
+      "sourceIPAddress": "198.51.100.5",
+      "principal": "IAMUser:bob.admin",
+      "errorCode": null,
+      "risk_note": null
+    },
+    {
+      "eventTime": "2026-03-11T07:30:00Z",
+      "eventName": "ConsoleLogin",
+      "sourceIPAddress": "198.51.100.100",
+      "principal": "Root",
+      "errorCode": null,
+      "risk_note": "Console login without MFA"
+    },
+    {
+      "eventTime": "2026-03-11T08:00:00Z",
+      "eventName": "GetAccountSummary",
+      "sourceIPAddress": "198.51.100.100",
+      "principal": "Root",
+      "errorCode": null,
+      "risk_note": "Root activity \u2014 break-glass policy violation risk"
+    },
+    {
+      "eventTime": "2026-03-11T08:05:00Z",
+      "eventName": "ListAccountAliases",
+      "sourceIPAddress": "198.51.100.100",
+      "principal": "Root",
+      "errorCode": null,
+      "risk_note": "Root activity \u2014 break-glass policy violation risk"
+    },
+    {
+      "eventTime": "2026-03-11T09:10:00Z",
+      "eventName": "PutBucketPolicy",
+      "sourceIPAddress": "185.220.101.33",
+      "principal": "arn:aws:sts::111122223333:assumed-role/CrossAccountVendorRole/vendor-sync",
+      "errorCode": null,
+      "risk_note": "Bucket policy change toward public access"
+    },
+    {
+      "eventTime": "2026-03-11T09:45:00Z",
+      "eventName": "DeleteTrail",
+      "sourceIPAddress": "185.220.101.33",
+      "principal": "arn:aws:sts::111122223333:assumed-role/CrossAccountVendorRole/vendor-sync",
+      "errorCode": "AccessDenied",
+      "risk_note": "Audit log tampering / evasion"
+    },
+    {
+      "eventTime": "2026-03-11T10:00:00Z",
+      "eventName": "DescribeSecurityGroups",
+      "sourceIPAddress": "203.0.113.50",
+      "principal": "IAMUser:alice.engineer",
+      "errorCode": null,
+      "risk_note": null
+    },
+    {
+      "eventTime": "2026-03-11T10:15:00Z",
+      "eventName": "GetBucketAcl",
+      "sourceIPAddress": "203.0.113.50",
+      "principal": "IAMUser:alice.engineer",
+      "errorCode": null,
+      "risk_note": null
+    },
+    {
+      "eventTime": "2026-03-11T10:20:00Z",
+      "eventName": "GetBucketPolicy",
+      "sourceIPAddress": "203.0.113.50",
+      "principal": "IAMUser:alice.engineer",
+      "errorCode": null,
+      "risk_note": null
+    },
+    {
+      "eventTime": "2026-03-11T11:00:00Z",
+      "eventName": "AssumeRole",
+      "sourceIPAddress": "198.51.100.45",
+      "principal": "IAMUser:alice.engineer",
+      "errorCode": null,
+      "risk_note": null
+    },
+    {
+      "eventTime": "2026-03-11T12:30:00Z",
+      "eventName": "RunInstances",
+      "sourceIPAddress": "198.51.100.45",
+      "principal": "IAMUser:alice.engineer",
+      "errorCode": null,
+      "risk_note": null
+    },
+    {
+      "eventTime": "2026-03-11T13:00:00Z",
+      "eventName": "CreateAccessKey",
+      "sourceIPAddress": "185.220.101.33",
+      "principal": "arn:aws:sts::111122223333:assumed-role/CrossAccountVendorRole/vendor-sync",
+      "errorCode": "AccessDenied",
+      "risk_note": null
+    },
+    {
+      "eventTime": "2026-03-11T13:00:01Z",
+      "eventName": "CreateAccessKey",
+      "sourceIPAddress": "185.220.101.33",
+      "principal": "arn:aws:sts::111122223333:assumed-role/CrossAccountVendorRole/vendor-sync",
+      "errorCode": "AccessDenied",
+      "risk_note": null
+    },
+    {
+      "eventTime": "2026-03-11T13:00:02Z",
+      "eventName": "CreateAccessKey",
+      "sourceIPAddress": "185.220.101.33",
+      "principal": "arn:aws:sts::111122223333:assumed-role/CrossAccountVendorRole/vendor-sync",
+      "errorCode": "AccessDenied",
+      "risk_note": null
+    },
+    {
+      "eventTime": "2026-03-11T13:05:00Z",
+      "eventName": "AttachUserPolicy",
+      "sourceIPAddress": "185.220.101.33",
+      "principal": "arn:aws:sts::111122223333:assumed-role/CrossAccountVendorRole/vendor-sync",
+      "errorCode": "AccessDenied",
+      "risk_note": null
+    },
+    {
+      "eventTime": "2026-03-11T14:00:00Z",
+      "eventName": "GetObject",
+      "sourceIPAddress": "185.220.101.33",
+      "principal": "arn:aws:sts::111122223333:assumed-role/CrossAccountVendorRole/vendor-sync",
+      "errorCode": "AccessDenied",
+      "risk_note": null
+    },
+    {
+      "eventTime": "2026-03-11T14:00:01Z",
+      "eventName": "GetObject",
+      "sourceIPAddress": "185.220.101.33",
+      "principal": "arn:aws:sts::111122223333:assumed-role/CrossAccountVendorRole/vendor-sync",
+      "errorCode": "AccessDenied",
+      "risk_note": null
+    },
+    {
+      "eventTime": "2026-03-11T14:00:02Z",
+      "eventName": "GetObject",
+      "sourceIPAddress": "185.220.101.33",
+      "principal": "arn:aws:sts::111122223333:assumed-role/CrossAccountVendorRole/vendor-sync",
+      "errorCode": "AccessDenied",
+      "risk_note": null
+    },
+    {
+      "eventTime": "2026-03-11T15:00:00Z",
+      "eventName": "ListBuckets",
+      "sourceIPAddress": "198.51.100.12",
+      "principal": "IAMUser:bob.admin",
+      "errorCode": null,
+      "risk_note": null
+    },
+    {
+      "eventTime": "2026-03-11T15:30:00Z",
+      "eventName": "PutBucketPublicAccessBlock",
+      "sourceIPAddress": "198.51.100.12",
+      "principal": "IAMUser:bob.admin",
+      "errorCode": null,
+      "risk_note": null
+    },
+    {
+      "eventTime": "2026-03-11T16:00:00Z",
+      "eventName": "ConsoleLogin",
+      "sourceIPAddress": "198.51.100.12",
+      "principal": "IAMUser:bob.admin",
+      "errorCode": null,
+      "risk_note": null
+    },
+    {
+      "eventTime": "2026-03-11T17:00:00Z",
+      "eventName": "Decrypt",
+      "sourceIPAddress": "10.0.2.20",
+      "principal": "arn:aws:sts::111122223333:assumed-role/LambdaExecutionRole/lambda-processor",
+      "errorCode": null,
+      "risk_note": null
+    },
+    {
+      "eventTime": "2026-03-11T18:20:00Z",
+      "eventName": "InvokeFunction",
+      "sourceIPAddress": "10.0.2.20",
+      "principal": "arn:aws:sts::111122223333:assumed-role/LambdaExecutionRole/lambda-processor",
+      "errorCode": null,
+      "risk_note": null
+    },
+    {
+      "eventTime": "2026-03-12T06:00:00Z",
+      "eventName": "GetCallerIdentity",
+      "sourceIPAddress": "45.33.32.156",
+      "principal": "IAMUser:svc-legacy-deploy",
+      "errorCode": null,
+      "risk_note": null
+    },
+    {
+      "eventTime": "2026-03-12T06:01:00Z",
+      "eventName": "ListUsers",
+      "sourceIPAddress": "45.33.32.156",
+      "principal": "IAMUser:svc-legacy-deploy",
+      "errorCode": null,
+      "risk_note": null
+    },
+    {
+      "eventTime": "2026-03-12T06:02:00Z",
+      "eventName": "ListRoles",
+      "sourceIPAddress": "45.33.32.156",
+      "principal": "IAMUser:svc-legacy-deploy",
+      "errorCode": null,
+      "risk_note": null
+    },
+    {
+      "eventTime": "2026-03-12T06:03:00Z",
+      "eventName": "ListPolicies",
+      "sourceIPAddress": "45.33.32.156",
+      "principal": "IAMUser:svc-legacy-deploy",
+      "errorCode": null,
+      "risk_note": null
+    },
+    {
+      "eventTime": "2026-03-12T06:04:00Z",
+      "eventName": "GetAccountAuthorizationDetails",
+      "sourceIPAddress": "45.33.32.156",
+      "principal": "IAMUser:svc-legacy-deploy",
+      "errorCode": null,
+      "risk_note": null
+    },
+    {
+      "eventTime": "2026-03-12T07:00:00Z",
+      "eventName": "AssumeRole",
+      "sourceIPAddress": "45.33.32.156",
+      "principal": "IAMUser:svc-legacy-deploy",
+      "errorCode": null,
+      "risk_note": "Cross-principal role assumption from unusual IP"
+    },
+    {
+      "eventTime": "2026-03-12T08:00:00Z",
+      "eventName": "GetSecretValue",
+      "sourceIPAddress": "45.33.32.156",
+      "principal": "arn:aws:sts::111122223333:assumed-role/CrossAccountVendorRole/automation",
+      "errorCode": "AccessDenied",
+      "risk_note": null
+    },
+    {
+      "eventTime": "2026-03-12T08:00:01Z",
+      "eventName": "GetSecretValue",
+      "sourceIPAddress": "45.33.32.156",
+      "principal": "arn:aws:sts::111122223333:assumed-role/CrossAccountVendorRole/automation",
+      "errorCode": "AccessDenied",
+      "risk_note": null
+    },
+    {
+      "eventTime": "2026-03-12T08:00:02Z",
+      "eventName": "GetSecretValue",
+      "sourceIPAddress": "45.33.32.156",
+      "principal": "arn:aws:sts::111122223333:assumed-role/CrossAccountVendorRole/automation",
+      "errorCode": "AccessDenied",
+      "risk_note": null
+    },
+    {
+      "eventTime": "2026-03-12T08:00:03Z",
+      "eventName": "GetSecretValue",
+      "sourceIPAddress": "45.33.32.156",
+      "principal": "arn:aws:sts::111122223333:assumed-role/CrossAccountVendorRole/automation",
+      "errorCode": "AccessDenied",
+      "risk_note": null
+    },
+    {
+      "eventTime": "2026-03-12T08:00:04Z",
+      "eventName": "GetSecretValue",
+      "sourceIPAddress": "45.33.32.156",
+      "principal": "arn:aws:sts::111122223333:assumed-role/CrossAccountVendorRole/automation",
+      "errorCode": "AccessDenied",
+      "risk_note": null
+    },
+    {
+      "eventTime": "2026-03-12T09:00:00Z",
+      "eventName": "GetObject",
+      "sourceIPAddress": "45.33.32.156",
+      "principal": "arn:aws:sts::111122223333:assumed-role/CrossAccountVendorRole/automation",
+      "errorCode": null,
+      "risk_note": null
+    },
+    {
+      "eventTime": "2026-03-12T10:00:00Z",
+      "eventName": "ConsoleLogin",
+      "sourceIPAddress": "203.0.113.12",
+      "principal": "IAMUser:bob.admin",
+      "errorCode": null,
+      "risk_note": null
+    },
+    {
+      "eventTime": "2026-03-12T11:00:00Z",
+      "eventName": "UpdateAssumeRolePolicy",
+      "sourceIPAddress": "198.51.100.5",
+      "principal": "IAMUser:bob.admin",
+      "errorCode": null,
+      "risk_note": null
+    },
+    {
+      "eventTime": "2026-03-12T12:00:00Z",
+      "eventName": "PassRole",
+      "sourceIPAddress": "198.51.100.45",
+      "principal": "IAMUser:alice.engineer",
+      "errorCode": null,
+      "risk_note": null
+    },
+    {
+      "eventTime": "2026-03-12T13:30:00Z",
+      "eventName": "LookupEvents",
+      "sourceIPAddress": "198.51.100.5",
+      "principal": "IAMUser:bob.admin",
+      "errorCode": null,
+      "risk_note": null
+    },
+    {
+      "eventTime": "2026-03-12T14:00:00Z",
+      "eventName": "GetTrailStatus",
+      "sourceIPAddress": "198.51.100.5",
+      "principal": "IAMUser:bob.admin",
+      "errorCode": null,
+      "risk_note": null
+    },
+    {
+      "eventTime": "2026-03-12T15:00:00Z",
+      "eventName": "PutImage",
+      "sourceIPAddress": "198.51.100.22",
+      "principal": "IAMUser:alice.engineer",
+      "errorCode": null,
+      "risk_note": null
+    },
+    {
+      "eventTime": "2026-03-12T16:00:00Z",
+      "eventName": "HeadBucket",
+      "sourceIPAddress": "203.0.113.88",
+      "principal": "IAMUser:contractor-analyst",
+      "errorCode": null,
+      "risk_note": null
+    },
+    {
+      "eventTime": "2026-03-12T17:00:00Z",
+      "eventName": "ListObjectsV2",
+      "sourceIPAddress": "203.0.113.88",
+      "principal": "IAMUser:contractor-analyst",
+      "errorCode": null,
+      "risk_note": null
+    },
+    {
+      "eventTime": "2026-03-13T08:00:00Z",
+      "eventName": "CreateVpc",
+      "sourceIPAddress": "198.51.100.45",
+      "principal": "IAMUser:alice.engineer",
+      "errorCode": null,
+      "risk_note": null
+    },
+    {
+      "eventTime": "2026-03-13T09:00:00Z",
+      "eventName": "AuthorizeSecurityGroupIngress",
+      "sourceIPAddress": "198.51.100.45",
+      "principal": "IAMUser:alice.engineer",
+      "errorCode": null,
+      "risk_note": null
+    },
+    {
+      "eventTime": "2026-03-13T10:00:00Z",
+      "eventName": "ConsoleLogin",
+      "sourceIPAddress": "192.0.2.200",
+      "principal": "IAMUser:breakglass-emergency",
+      "errorCode": null,
+      "risk_note": "Console login without MFA"
+    },
+    {
+      "eventTime": "2026-03-13T10:30:00Z",
+      "eventName": "DetachRolePolicy",
+      "sourceIPAddress": "192.0.2.200",
+      "principal": "IAMUser:breakglass-emergency",
+      "errorCode": "AccessDenied",
+      "risk_note": null
+    },
+    {
+      "eventTime": "2026-03-13T10:30:01Z",
+      "eventName": "DetachRolePolicy",
+      "sourceIPAddress": "192.0.2.200",
+      "principal": "IAMUser:breakglass-emergency",
+      "errorCode": "AccessDenied",
+      "risk_note": null
+    },
+    {
+      "eventTime": "2026-03-13T10:30:02Z",
+      "eventName": "DetachRolePolicy",
+      "sourceIPAddress": "192.0.2.200",
+      "principal": "IAMUser:breakglass-emergency",
+      "errorCode": "AccessDenied",
+      "risk_note": null
+    },
+    {
+      "eventTime": "2026-03-13T11:00:00Z",
+      "eventName": "GetBucketVersioning",
+      "sourceIPAddress": "198.51.100.12",
+      "principal": "IAMUser:bob.admin",
+      "errorCode": null,
+      "risk_note": null
+    }
+  ],
+  "summary": {
+    "total_findings": 13,
+    "by_severity": {
+      "Critical": 5,
+      "High": 6,
+      "Medium": 2,
+      "Low": 0
+    },
+    "timeline_entries": 77
+  }
+}

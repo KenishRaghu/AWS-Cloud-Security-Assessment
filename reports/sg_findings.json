@@ -1,0 +1,125 @@
+{
+  "scan_type": "security_group",
+  "generated_at": "2026-04-10T22:09:32Z",
+  "source_file": "environment/security_groups.json",
+  "findings": [
+    {
+      "id": "SG-001",
+      "title": "Sensitive port open to the internet",
+      "severity": "Critical",
+      "resource": "web-tier-public (sg-0a1b2c3d4e5f67890)",
+      "category": "EC2",
+      "description": "Inbound TCP [22] allowed from 0.0.0.0/0 (security group 'web-tier-public').",
+      "evidence": {
+        "group_id": "sg-0a1b2c3d4e5f67890",
+        "ports": [
+          22
+        ],
+        "cidr": "0.0.0.0/0",
+        "rule_description": "temporary ssh"
+      },
+      "remediation_hint": "Restrict to bastion IPs or SSM Session Manager; use /32 corp egress IPs only."
+    },
+    {
+      "id": "SG-002",
+      "title": "Unrestricted egress (all traffic to 0.0.0.0/0)",
+      "severity": "Medium",
+      "resource": "web-tier-public (sg-0a1b2c3d4e5f67890)",
+      "category": "EC2",
+      "description": "Security group allows all outbound traffic. Often acceptable, but risky for regulated data planes.",
+      "evidence": {
+        "group_id": "sg-0a1b2c3d4e5f67890"
+      },
+      "remediation_hint": "For sensitive tiers, restrict egress to required endpoints (VPC endpoints, known IPs)."
+    },
+    {
+      "id": "SG-003",
+      "title": "Sensitive port exposed to an overly broad CIDR",
+      "severity": "High",
+      "resource": "db-tier-mysql (sg-0f9e8d7c6b5a43210)",
+      "category": "EC2",
+      "description": "Ports [3306] reachable from large network 10.0.0.0/8.",
+      "evidence": {
+        "group_id": "sg-0f9e8d7c6b5a43210",
+        "cidr": "10.0.0.0/8"
+      },
+      "remediation_hint": "Narrow to application subnet CIDRs or security group references."
+    },
+    {
+      "id": "SG-004",
+      "title": "Unrestricted egress (all traffic to 0.0.0.0/0)",
+      "severity": "Medium",
+      "resource": "db-tier-mysql (sg-0f9e8d7c6b5a43210)",
+      "category": "EC2",
+      "description": "Security group allows all outbound traffic. Often acceptable, but risky for regulated data planes.",
+      "evidence": {
+        "group_id": "sg-0f9e8d7c6b5a43210"
+      },
+      "remediation_hint": "For sensitive tiers, restrict egress to required endpoints (VPC endpoints, known IPs)."
+    },
+    {
+      "id": "SG-005",
+      "title": "Sensitive port open to the internet",
+      "severity": "Critical",
+      "resource": "bastion-legacy (sg-01112233445566778)",
+      "category": "EC2",
+      "description": "Inbound TCP [3389] allowed from 0.0.0.0/0 (security group 'bastion-legacy').",
+      "evidence": {
+        "group_id": "sg-01112233445566778",
+        "ports": [
+          3389
+        ],
+        "cidr": "0.0.0.0/0",
+        "rule_description": ""
+      },
+      "remediation_hint": "Restrict to bastion IPs or SSM Session Manager; use /32 corp egress IPs only."
+    },
+    {
+      "id": "SG-006",
+      "title": "Unrestricted egress (all traffic to 0.0.0.0/0)",
+      "severity": "Medium",
+      "resource": "bastion-legacy (sg-01112233445566778)",
+      "category": "EC2",
+      "description": "Security group allows all outbound traffic. Often acceptable, but risky for regulated data planes.",
+      "evidence": {
+        "group_id": "sg-01112233445566778"
+      },
+      "remediation_hint": "For sensitive tiers, restrict egress to required endpoints (VPC endpoints, known IPs)."
+    },
+    {
+      "id": "SG-007",
+      "title": "Stale or unused security group rule (description hint)",
+      "severity": "Low",
+      "resource": "internal-app-only (sg-09998877665544332)",
+      "category": "EC2",
+      "description": "Rule description suggests the entry is no longer needed.",
+      "evidence": {
+        "cidr": "198.51.100.10/32",
+        "description": "unused \u2014 old admin IP",
+        "ports": "22-22"
+      },
+      "remediation_hint": "Review with owners; remove rules quarterly as part of SG hygiene."
+    },
+    {
+      "id": "SG-008",
+      "title": "Unrestricted egress (all traffic to 0.0.0.0/0)",
+      "severity": "Medium",
+      "resource": "lambda-eni-placeholder (sg-0deadbeefcafe0001)",
+      "category": "EC2",
+      "description": "Security group allows all outbound traffic. Often acceptable, but risky for regulated data planes.",
+      "evidence": {
+        "group_id": "sg-0deadbeefcafe0001"
+      },
+      "remediation_hint": "For sensitive tiers, restrict egress to required endpoints (VPC endpoints, known IPs)."
+    }
+  ],
+  "summary": {
+    "total": 8,
+    "by_severity": {
+      "Critical": 2,
+      "High": 1,
+      "Medium": 4,
+      "Low": 1
+    }
+  }
+}

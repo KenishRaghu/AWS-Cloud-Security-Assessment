@@ -1,0 +1,285 @@
+{
+  "scan_type": "iam",
+  "generated_at": "2026-04-10T22:09:32Z",
+  "source_file": "environment/iam_policies.json",
+  "findings": [
+    {
+      "id": "IAM-001",
+      "title": "Overly permissive IAM policy statement",
+      "severity": "Critical",
+      "resource": "arn:aws:iam::111122223333:policy/AdministratorAccess-Simulated",
+      "category": "IAM",
+      "description": "Managed policy 'AdministratorAccess-Simulated' contains a broad Allow: Statement allows Action *.",
+      "evidence": {
+        "policy_name": "AdministratorAccess-Simulated",
+        "statement_sid": null
+      },
+      "remediation_hint": "Replace * with explicit actions/resources; split duties across roles."
+    },
+    {
+      "id": "IAM-002",
+      "title": "Sensitive IAM/API actions without MFA condition",
+      "severity": "High",
+      "resource": "arn:aws:iam::111122223333:policy/AdministratorAccess-Simulated",
+      "category": "IAM",
+      "description": "Policy 'AdministratorAccess-Simulated' grants sensitive capabilities without aws:MultiFactorAuthPresent (or similar).",
+      "evidence": {
+        "policy_name": "AdministratorAccess-Simulated",
+        "actions_sample": [
+          "*"
+        ]
+      },
+      "remediation_hint": "Add MFA conditions for human principals; use roles for automation with externalId."
+    },
+    {
+      "id": "IAM-003",
+      "title": "High-risk managed policy attached directly to IAM users",
+      "severity": "High",
+      "resource": "arn:aws:iam::111122223333:policy/AdministratorAccess-Simulated",
+      "category": "IAM",
+      "description": "Policy 'AdministratorAccess-Simulated' with broad permissions is attached to users ['svc-legacy-deploy'] instead of roles.",
+      "evidence": {
+        "users": [
+          "svc-legacy-deploy"
+        ]
+      },
+      "remediation_hint": "Move humans to SSO/roles; attach broad policies only to instance/task roles with trust constraints."
+    },
+    {
+      "id": "IAM-004",
+      "title": "Overly permissive IAM policy statement",
+      "severity": "Critical",
+      "resource": "arn:aws:iam::111122223333:policy/PowerUserWithStar",
+      "category": "IAM",
+      "description": "Managed policy 'PowerUserWithStar' contains a broad Allow: Statement allows Action *.",
+      "evidence": {
+        "policy_name": "PowerUserWithStar",
+        "statement_sid": "WildcardManagement"
+      },
+      "remediation_hint": "Replace * with explicit actions/resources; split duties across roles."
+    },
+    {
+      "id": "IAM-005",
+      "title": "Sensitive IAM/API actions without MFA condition",
+      "severity": "High",
+      "resource": "arn:aws:iam::111122223333:policy/PowerUserWithStar",
+      "category": "IAM",
+      "description": "Policy 'PowerUserWithStar' grants sensitive capabilities without aws:MultiFactorAuthPresent (or similar).",
+      "evidence": {
+        "policy_name": "PowerUserWithStar",
+        "actions_sample": [
+          "*"
+        ]
+      },
+      "remediation_hint": "Add MFA conditions for human principals; use roles for automation with externalId."
+    },
+    {
+      "id": "IAM-006",
+      "title": "High-risk managed policy attached directly to IAM users",
+      "severity": "High",
+      "resource": "arn:aws:iam::111122223333:policy/PowerUserWithStar",
+      "category": "IAM",
+      "description": "Policy 'PowerUserWithStar' with broad permissions is attached to users ['breakglass-emergency'] instead of roles.",
+      "evidence": {
+        "users": [
+          "breakglass-emergency"
+        ]
+      },
+      "remediation_hint": "Move humans to SSO/roles; attach broad policies only to instance/task roles with trust constraints."
+    },
+    {
+      "id": "IAM-007",
+      "title": "Potentially unused or stale IAM permissions",
+      "severity": "Low",
+      "resource": "arn:aws:iam::111122223333:policy/AppRuntimePolicy",
+      "category": "IAM",
+      "description": "Policy 'AppRuntimePolicy' still grants access to resources that appear deprecated.",
+      "evidence": {
+        "resource": "arn:aws:s3:::deprecated-warehouse"
+      },
+      "remediation_hint": "Validate last-access; remove unused statements; use IAM Access Analyzer."
+    },
+    {
+      "id": "IAM-008",
+      "title": "Potentially unused or stale IAM permissions",
+      "severity": "Low",
+      "resource": "arn:aws:iam::111122223333:policy/AppRuntimePolicy",
+      "category": "IAM",
+      "description": "Policy 'AppRuntimePolicy' still grants access to resources that appear deprecated.",
+      "evidence": {
+        "resource": "arn:aws:s3:::deprecated-warehouse/*"
+      },
+      "remediation_hint": "Validate last-access; remove unused statements; use IAM Access Analyzer."
+    },
+    {
+      "id": "IAM-009",
+      "title": "Overly permissive IAM policy statement",
+      "severity": "Critical",
+      "resource": "arn:aws:iam::111122223333:policy/HumanAdminNoMFACondition",
+      "category": "IAM",
+      "description": "Managed policy 'HumanAdminNoMFACondition' contains a broad Allow: Statement allows Resource *.",
+      "evidence": {
+        "policy_name": "HumanAdminNoMFACondition",
+        "statement_sid": "AdminWithoutMFAReq"
+      },
+      "remediation_hint": "Replace * with explicit actions/resources; split duties across roles."
+    },
+    {
+      "id": "IAM-010",
+      "title": "Sensitive IAM/API actions without MFA condition",
+      "severity": "High",
+      "resource": "arn:aws:iam::111122223333:policy/HumanAdminNoMFACondition",
+      "category": "IAM",
+      "description": "Policy 'HumanAdminNoMFACondition' grants sensitive capabilities without aws:MultiFactorAuthPresent (or similar).",
+      "evidence": {
+        "policy_name": "HumanAdminNoMFACondition",
+        "actions_sample": [
+          "iam:CreateUser",
+          "iam:AttachUserPolicy",
+          "iam:PutUserPolicy",
+          "sts:AssumeRole"
+        ]
+      },
+      "remediation_hint": "Add MFA conditions for human principals; use roles for automation with externalId."
+    },
+    {
+      "id": "IAM-011",
+      "title": "Simulated inline credential material in policy export",
+      "severity": "Critical",
+      "resource": "arn:aws:iam::111122223333:policy/CIEmbeddedKeySimulation",
+      "category": "IAM",
+      "description": "Possible AWS access key id pattern in policy text",
+      "evidence": {
+        "policy_name": "CIEmbeddedKeySimulation"
+      },
+      "remediation_hint": "Rotate any exposed keys; store secrets in Secrets Manager; use IAM Roles for workloads."
+    },
+    {
+      "id": "IAM-012",
+      "title": "Simulated inline credential material in policy export",
+      "severity": "Critical",
+      "resource": "arn:aws:iam::111122223333:policy/CIEmbeddedKeySimulation",
+      "category": "IAM",
+      "description": "Possible secret key reference in policy text",
+      "evidence": {
+        "policy_name": "CIEmbeddedKeySimulation"
+      },
+      "remediation_hint": "Rotate any exposed keys; store secrets in Secrets Manager; use IAM Roles for workloads."
+    },
+    {
+      "id": "IAM-013",
+      "title": "Overly permissive IAM policy statement",
+      "severity": "Critical",
+      "resource": "arn:aws:iam::111122223333:policy/BroadAssumeRoleTrust",
+      "category": "IAM",
+      "description": "Managed policy 'BroadAssumeRoleTrust' contains a broad Allow: Statement allows Resource *.",
+      "evidence": {
+        "policy_name": "BroadAssumeRoleTrust",
+        "statement_sid": null
+      },
+      "remediation_hint": "Replace * with explicit actions/resources; split duties across roles."
+    },
+    {
+      "id": "IAM-014",
+      "title": "Sensitive IAM/API actions without MFA condition",
+      "severity": "High",
+      "resource": "arn:aws:iam::111122223333:policy/BroadAssumeRoleTrust",
+      "category": "IAM",
+      "description": "Policy 'BroadAssumeRoleTrust' grants sensitive capabilities without aws:MultiFactorAuthPresent (or similar).",
+      "evidence": {
+        "policy_name": "BroadAssumeRoleTrust",
+        "actions_sample": [
+          "sts:AssumeRole"
+        ]
+      },
+      "remediation_hint": "Add MFA conditions for human principals; use roles for automation with externalId."
+    },
+    {
+      "id": "IAM-015",
+      "title": "High-risk managed policy attached directly to IAM users",
+      "severity": "High",
+      "resource": "arn:aws:iam::111122223333:policy/BroadAssumeRoleTrust",
+      "category": "IAM",
+      "description": "Policy 'BroadAssumeRoleTrust' with broad permissions is attached to users ['contractor-analyst'] instead of roles.",
+      "evidence": {
+        "users": [
+          "contractor-analyst"
+        ]
+      },
+      "remediation_hint": "Move humans to SSO/roles; attach broad policies only to instance/task roles with trust constraints."
+    },
+    {
+      "id": "IAM-016",
+      "title": "Inline user policy with wildcard Action or Resource",
+      "severity": "High",
+      "resource": "user/contractor-analyst/InlineS3ReadAll",
+      "category": "IAM",
+      "description": "User 'contractor-analyst' inline policy 'InlineS3ReadAll': Statement allows Resource *.",
+      "evidence": {
+        "user": "contractor-analyst",
+        "inline_policy": "InlineS3ReadAll"
+      },
+      "remediation_hint": "Convert to managed policy with review; scope resources to bucket/table ARNs."
+    },
+    {
+      "id": "IAM-017",
+      "title": "Multiple managed policies attached to a single IAM user",
+      "severity": "Medium",
+      "resource": "user/svc-legacy-deploy",
+      "category": "IAM",
+      "description": "Users with many attached policies are harder to reason about and often indicate long-lived access.",
+      "evidence": {
+        "policies": [
+          "AdministratorAccess-Simulated",
+          "VendorReadOnly"
+        ]
+      },
+      "remediation_hint": "Prefer IAM Identity Center groups and permission sets; consolidate and remove redundant policies."
+    },
+    {
+      "id": "IAM-018",
+      "title": "Cross-account role trust without ExternalId",
+      "severity": "High",
+      "resource": "role/CrossAccountVendorRole",
+      "category": "IAM",
+      "description": "Role 'CrossAccountVendorRole' trusts another account principal without sts:ExternalId, increasing confused-deputy risk.",
+      "evidence": {
+        "principal": "arn:aws:iam::999988887777:root"
+      },
+      "remediation_hint": "Require ExternalId on cross-account trusts; scope to specific role ARNs not account root."
+    },
+    {
+      "id": "IAM-019",
+      "title": "Unscoped sts:AssumeRole permission",
+      "severity": "Critical",
+      "resource": "arn:aws:iam::111122223333:policy/HumanAdminNoMFACondition",
+      "category": "IAM",
+      "description": "Policy 'HumanAdminNoMFACondition' allows AssumeRole against Resource *.",
+      "evidence": {
+        "policy_name": "HumanAdminNoMFACondition"
+      },
+      "remediation_hint": "List explicit role ARNs; deny AssumeRole via SCP except for approved paths."
+    },
+    {
+      "id": "IAM-020",
+      "title": "Unscoped sts:AssumeRole permission",
+      "severity": "Critical",
+      "resource": "arn:aws:iam::111122223333:policy/BroadAssumeRoleTrust",
+      "category": "IAM",
+      "description": "Policy 'BroadAssumeRoleTrust' allows AssumeRole against Resource *.",
+      "evidence": {
+        "policy_name": "BroadAssumeRoleTrust"
+      },
+      "remediation_hint": "List explicit role ARNs; deny AssumeRole via SCP except for approved paths."
+    }
+  ],
+  "summary": {
+    "total": 20,
+    "by_severity": {
+      "Critical": 8,
+      "High": 9,
+      "Medium": 1,
+      "Low": 2
+    }
+  }
+}
