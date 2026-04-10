@@ -8,7 +8,6 @@ Portfolio project that demonstrates **how you assess AWS posture**—identity, d
 - **`scripts/`** — Small Python tools (stdlib only) that **parse those JSON files** and emit structured findings. **These scripts are the audit automation**; the security judgment lives in the rules, the report narrative, and `docs/remediation_playbook.md`.
 - **`reports/`** — Generated Markdown: executive-style assessment plus a **CloudTrail incident timeline** you can walk through verbally.
 
-This is **not** infrastructure-as-code and **not** a live pentest. It is a **repeatable assessment methodology** you can demo locally in interviews.
 
 ## Methodology (how to talk about it)
 
@@ -99,6 +98,3 @@ Exact counts depend on the current JSON; the **report** aggregates everything wi
 - **Network:** Security groups as **stateful instance firewalls**; why **0.0.0.0/0** on management and database ports fails every reasonable risk model.
 - **Detective:** CloudTrail as the **audit backbone**, and why **`StopLogging`** is treated as an incident-class signal.
 
-## License
-
-Use freely for portfolio and interview preparation. Synthetic data only—do not map account IDs or IPs to real organizations.
